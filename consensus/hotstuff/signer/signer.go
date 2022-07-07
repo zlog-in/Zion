@@ -68,6 +68,7 @@ func (s *SignerImpl) Sign(data []byte) ([]byte, error) {
 	return crypto.Sign(hashData, s.privateKey)
 }
 
+// SigHash generate header hash without signature
 func (s *SignerImpl) SignHash(hash common.Hash) ([]byte, error) {
 	wrapHash := s.wrapCommittedSeal(hash)
 	return s.Sign(wrapHash)
@@ -346,7 +347,7 @@ func checkValidatorQuorum(committers []common.Address, valSet hotstuff.Validator
 	if validSeal < validators.Q() {
 		return errInvalidCommittedSeals
 	}
-	return nil
+	return nil // default nil means no error happened
 }
 
 func (s *SignerImpl) GetSignersFromCommittedSeals(hash common.Hash, seals [][]byte) ([]common.Address, error) {
@@ -369,7 +370,7 @@ func (s *SignerImpl) GetSignersFromCommittedSeals(hash common.Hash, seals [][]by
 func getSignatureAddress(data []byte, sig []byte) (common.Address, error) {
 	// 1. Keccak data
 	hashData := crypto.Keccak256(data)
-	// 2. Recover public key
+	// 2. Recover public key: how can pubkey be recovered from signature? Pubkey is used to verify signature
 	pubkey, err := crypto.SigToPub(hashData, sig)
 	if err != nil {
 		return common.Address{}, err

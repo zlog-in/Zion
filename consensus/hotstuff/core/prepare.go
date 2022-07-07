@@ -26,6 +26,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
+// what is the difference between sendPrepare and sendPreapreVote?
 func (c *core) sendPrepare() {
 	logger := c.newLogger()
 

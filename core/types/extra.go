@@ -22,8 +22,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rlp"
 )
 
@@ -32,8 +32,8 @@ var (
 	// to identify whether the block is from Istanbul consensus engine
 	HotstuffDigest = common.HexToHash("0x63746963616c2062797a616e74696e65206661756c7420746f6c6572616e6365")
 
-	HotstuffExtraVanity = 32 // Fixed number of extra-data bytes reserved for validator vanity
-	HotstuffExtraSeal   = 65 // Fixed number of extra-data bytes reserved for validator seal
+	HotstuffExtraVanity = 32 // Fixed number of extra-data bytes reserved for validator vanity	//?
+	HotstuffExtraSeal   = 65 // Fixed number of extra-data bytes reserved for validator seal	//?
 
 	// ErrInvalidHotstuffHeaderExtra is returned if the length of extra-data is less than 32 bytes
 	ErrInvalidHotstuffHeaderExtra = errors.New("invalid istanbul header extra-data")
@@ -41,12 +41,13 @@ var (
 
 type HotstuffExtra struct {
 	Validators    []common.Address // consensus participants address for next epoch, and in the first block, it contains all genesis validators. keep empty if no epoch change.
-	Seal          []byte           // proposer signature
+	Seal          []byte           // proposer signature: seal is signature, but why this name?
 	CommittedSeal [][]byte         // consensus participants signatures and it's size should be greater than 2/3 of validators
 	Salt          []byte           // omit empty
 }
 
-// EncodeRLP serializes ist into the Ethereum RLP format.
+// EncodeRLP serializes ist extra data into the Ethereum RLP format.
+// what does ist means?
 func (ist *HotstuffExtra) EncodeRLP(w io.Writer) error {
 	return rlp.Encode(w, []interface{}{
 		ist.Validators,

@@ -44,13 +44,14 @@ const (
 )
 
 // HotStuff is the scalable hotstuff consensus engine
+// the backend is an instantiation of a hotstuff node
 type backend struct {
-	config         *hotstuff.Config
-	db             ethdb.Database // Database to store and retrieve necessary information
+	config         *hotstuff.Config // load config
+	db             ethdb.Database   // Database to store and retrieve necessary information
 	core           hotstuff.CoreEngine
-	signer         hotstuff.Signer
+	signer         hotstuff.Signer // the identification of this hotstuff node
 	chain          consensus.ChainReader
-	currentBlock   func() *types.Block
+	currentBlock   func() *types.Block // function as field?
 	getBlockByHash func(hash common.Hash) *types.Block
 	hasBadBlock    func(hash common.Hash) bool
 	logger         log.Logger
@@ -80,7 +81,7 @@ type backend struct {
 
 	eventMux *event.TypeMux
 
-	proposals map[common.Address]bool // Current list of proposals we are pushing
+	proposals map[common.Address]bool // Current list of proposals we are pushing? address -> boolean
 }
 
 func New(config *hotstuff.Config, privateKey *ecdsa.PrivateKey, db ethdb.Database) consensus.HotStuff {
@@ -228,6 +229,7 @@ func (s *backend) PreCommit(proposal hotstuff.Proposal, seals [][]byte) (hotstuf
 	return block, nil
 }
 
+// what is the ForwardCommit?
 func (s *backend) ForwardCommit(proposal hotstuff.Proposal, extra []byte) (hotstuff.Proposal, error) {
 	block, ok := proposal.(*types.Block)
 	if !ok {
@@ -249,7 +251,7 @@ func (s *backend) Commit(proposal hotstuff.Proposal) error {
 		s.logger.Error("Committed to miner worker", "proposal", "not block")
 		return errInvalidProposal
 	}
-	
+
 	s.logger.Info("Committed", "address", s.Address(), "hash", proposal.Hash(), "number", proposal.Number().Uint64())
 	// - if the proposed and committed blocks are the same, send the proposed hash
 	//   to commit channel, which is being watched inside the engine.Seal() function.
@@ -362,7 +364,7 @@ func (s *backend) GetProposal(hash common.Hash) hotstuff.Proposal {
 	return s.getBlockByHash(hash)
 }
 
-// HasProposal implements hotstuff.Backend.HashBlock
+// HasProposal implements hotstuff.Backend.HashBlock  ??? HasBlock
 func (s *backend) HasProposal(hash common.Hash, number *big.Int) bool {
 	return s.chain.GetHeader(hash, number.Uint64()) != nil
 }

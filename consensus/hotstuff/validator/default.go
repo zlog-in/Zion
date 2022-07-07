@@ -32,7 +32,7 @@ import (
 var ErrInvalidParticipant = errors.New("invalid participants")
 
 type defaultValidator struct {
-	address common.Address
+	address common.Address // only one validator?
 }
 
 func (val *defaultValidator) Address() common.Address {
@@ -46,12 +46,12 @@ func (val *defaultValidator) String() string {
 // ----------------------------------------------------------------------------
 
 type defaultSet struct {
-	validators hotstuff.Validators
-	policy     hotstuff.SelectProposerPolicy
+	validators hotstuff.Validators           // group of validators
+	policy     hotstuff.SelectProposerPolicy // policy to select a new proposer
 
-	proposer    hotstuff.Validator
+	proposer    hotstuff.Validator // initial proposer for default group of validators
 	validatorMu sync.RWMutex
-	selector    hotstuff.ProposalSelector
+	selector    hotstuff.ProposalSelector // selector for proposal? what does proposal mean: blocks or EIP
 }
 
 func newDefaultSet(addrs []common.Address, policy hotstuff.SelectProposerPolicy) *defaultSet {
@@ -112,6 +112,7 @@ func (valSet *defaultSet) GetByIndex(i uint64) hotstuff.Validator {
 	return nil
 }
 
+// get index of a validator by its address
 func (valSet *defaultSet) GetByAddress(addr common.Address) (int, hotstuff.Validator) {
 	for i, val := range valSet.List() {
 		if addr == val.Address() {

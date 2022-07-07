@@ -125,7 +125,7 @@ func (b *backlog) Pop(addr common.Address) (data *hotstuff.Message, priority int
 	}
 }
 
-var messagePriorityTable = map[hotstuff.MsgType]int64{
+var messagePriorityTable = map[hotstuff.MsgType]int64{ // here is the priority for different types of message
 	MsgTypeNewView:       1,
 	MsgTypePrepare:       2,
 	MsgTypePrepareVote:   3,

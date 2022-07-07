@@ -41,7 +41,7 @@ type Proposal interface {
 
 	ParentHash() common.Hash
 
-	Coinbase() common.Address
+	Coinbase() common.Address // is Coinbase the creator of this proposal?
 
 	Time() uint64
 
@@ -117,7 +117,7 @@ type QuorumCert struct {
 	View     *View
 	Hash     common.Hash // block header sig hash
 	Proposer common.Address
-	Extra    []byte
+	Extra    []byte // the signatures of over 2/3 validators?
 }
 
 // EncodeRLP serializes b into the Ethereum RLP format.
@@ -193,10 +193,10 @@ func RegisterMsgTypeConvertHandler(handler MsgTypeConvert) {
 }
 
 type Message struct {
-	Code          MsgType
+	Code          MsgType // how many types do we have?
 	View          *View
 	Msg           []byte
-	Address       common.Address
+	Address       common.Address // the sender?
 	Signature     []byte
 	CommittedSeal []byte
 }

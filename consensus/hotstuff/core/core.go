@@ -29,12 +29,12 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 )
 
-type core struct {
+type core struct { // does each correct running core reprensent a honest hotstuff node?
 	config *hotstuff.Config
 	logger log.Logger
 
 	current  *roundState
-	backend  hotstuff.Backend
+	backend  hotstuff.Backend // backend also contains a signer, is it same as the one in the next line?
 	signer   hotstuff.Signer
 	valSet   hotstuff.ValidatorSet
 	backlogs *backlog

@@ -34,7 +34,7 @@ import (
 )
 
 const (
-	NewBlockMsg = 0x07
+	NewBlockMsg = 0x07 //two types of msg?
 	hotstuffMsg = 0x11
 )
 
@@ -130,6 +130,6 @@ func (s *backend) SubscribeRequest(ch chan<- types.Block) event.Subscription {
 	return s.reqFeed.Subscribe(ch)
 }
 
-func (s *backend) SubscribeNodes(ch chan <- consensus.StaticNodesEvent) event.Subscription {
+func (s *backend) SubscribeNodes(ch chan<- consensus.StaticNodesEvent) event.Subscription {
 	return s.nodesFeed.Subscribe(ch)
 }

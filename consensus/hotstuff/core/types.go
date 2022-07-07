@@ -35,6 +35,8 @@ var (
 
 type MsgType uint64
 
+// where are the code snippet for generating those different types of msg, such as MsgNewView
+
 const (
 	MsgTypeNewView       MsgType = 1
 	MsgTypePrepare       MsgType = 2

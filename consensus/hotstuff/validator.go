@@ -91,4 +91,4 @@ type ValidatorSet interface {
 
 // ----------------------------------------------------------------------------
 
-type ProposalSelector func(ValidatorSet, common.Address, uint64) Validator
+type ProposalSelector func(ValidatorSet, common.Address, uint64) Validator //where is the implementation for this Selector?

@@ -44,8 +44,8 @@ func NewMessageSet(valSet hotstuff.ValidatorSet) *MessageSet {
 type MessageSet struct {
 	view *hotstuff.View
 	vs   hotstuff.ValidatorSet
-	mtx  *sync.Mutex
-	msgs map[common.Address]*hotstuff.Message
+	mtx  *sync.Mutex                          // is Mutex the datastruct for message passing?
+	msgs map[common.Address]*hotstuff.Message // need to be explained in details
 }
 
 func (s *MessageSet) View() *hotstuff.View {

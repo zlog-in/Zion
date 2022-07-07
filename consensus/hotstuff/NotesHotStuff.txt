@@ -1,0 +1,13 @@
+Here is the notes when I am reading the code for HotStuff
+
+
+packages under HotStuff
+github.com/ethereum/go-ethereum/consensus/hotstuff
+github.com/ethereum/go-ethereum/consensus/hotstuff/backend
+github.com/ethereum/go-ethereum/consensus/hotstuff/core
+github.com/ethereum/go-ethereum/consensus/hotstuff/message_set
+github.com/ethereum/go-ethereum/consensus/hotstuff/signer
+github.com/ethereum/go-ethereum/consensus/hotstuff/tool
+github.com/ethereum/go-ethereum/consensus/hotstuff/validator
+
+
