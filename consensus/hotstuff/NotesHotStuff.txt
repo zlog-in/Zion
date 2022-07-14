@@ -10,4 +10,5 @@ github.com/ethereum/go-ethereum/consensus/hotstuff/signer
 github.com/ethereum/go-ethereum/consensus/hotstuff/tool
 github.com/ethereum/go-ethereum/consensus/hotstuff/validator
 
-
+interfaces defined 
+interfaces implemented 

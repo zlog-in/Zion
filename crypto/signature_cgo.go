@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
+//go:build !nacl && !js && cgo
 // +build !nacl,!js,cgo
 
 package crypto
@@ -56,7 +57,7 @@ func Sign(digestHash []byte, prv *ecdsa.PrivateKey) (sig []byte, err error) {
 		return nil, fmt.Errorf("hash is required to be exactly %d bytes (%d)", DigestLength, len(digestHash))
 	}
 	seckey := math.PaddedBigBytes(prv.D, prv.Params().BitSize/8)
-	defer zeroBytes(seckey)
+	defer zeroBytes(seckey) // cleanup the seckey after signing
 	return secp256k1.Sign(digestHash, seckey)
 }
 

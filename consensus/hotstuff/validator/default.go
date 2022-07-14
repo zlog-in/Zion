@@ -51,7 +51,7 @@ type defaultSet struct {
 
 	proposer    hotstuff.Validator // initial proposer for default group of validators
 	validatorMu sync.RWMutex
-	selector    hotstuff.ProposalSelector // selector for proposal? what does proposal mean: blocks or EIP
+	selector    hotstuff.ProposalSelector // selector for proposal? what does proposal mean: blocks or EIP. Should be ProposerSelector
 }
 
 func newDefaultSet(addrs []common.Address, policy hotstuff.SelectProposerPolicy) *defaultSet {
@@ -64,7 +64,7 @@ func newDefaultSet(addrs []common.Address, policy hotstuff.SelectProposerPolicy)
 		valSet.validators[i] = New(addr)
 	}
 	// sort validator
-	sort.Sort(valSet.validators)
+	sort.Sort(valSet.validators) // Alphabetical order
 	// init proposer
 	if valSet.Size() > 0 {
 		valSet.proposer = valSet.GetByIndex(0)
@@ -74,24 +74,26 @@ func newDefaultSet(addrs []common.Address, policy hotstuff.SelectProposerPolicy)
 		valSet.selector = stickySelector
 	}
 	if policy == hotstuff.VRF {
-		valSet.selector = vrfSelector
+		valSet.selector = vrfSelector // ???
 	}
 
 	return valSet
 }
 
 func (valSet *defaultSet) Size() int {
-	valSet.validatorMu.RLock()
+	valSet.validatorMu.RLock() // why needs locker for reading?
 	defer valSet.validatorMu.RUnlock()
 	return len(valSet.validators)
 }
 
+// list of validators
 func (valSet *defaultSet) List() []hotstuff.Validator {
 	valSet.validatorMu.RLock()
 	defer valSet.validatorMu.RUnlock()
 	return valSet.validators
 }
 
+// list of validators' address
 func (valSet *defaultSet) AddressList() []common.Address {
 	valSet.validatorMu.RLock()
 	defer valSet.validatorMu.RUnlock()
@@ -131,10 +133,11 @@ func (valSet *defaultSet) IsProposer(address common.Address) bool {
 	return reflect.DeepEqual(valSet.GetProposer(), val)
 }
 
+// round means round number? height? what if round = 0 ?
 func (valSet *defaultSet) CalcProposer(lastProposer common.Address, round uint64) {
 	valSet.validatorMu.RLock()
 	defer valSet.validatorMu.RUnlock()
-	valSet.proposer = valSet.selector(valSet, lastProposer, round)
+	valSet.proposer = valSet.selector(valSet, lastProposer, round) // where is the implementation for this selector???
 }
 
 func (valSet *defaultSet) CalcProposerByIndex(index uint64) {
@@ -151,10 +154,10 @@ func calcSeed(valSet hotstuff.ValidatorSet, proposer common.Address, round uint6
 	if idx, val := valSet.GetByAddress(proposer); val != nil {
 		offset = idx
 	}
-	return uint64(offset) + round
+	return uint64(offset) + round // returned value to select next proposer?
 }
 
-func emptyAddress(addr common.Address) bool {
+func emptyAddress(addr common.Address) bool { //
 	return addr == common.Address{}
 }
 
@@ -166,12 +169,13 @@ func roundRobinSelector(valSet hotstuff.ValidatorSet, proposer common.Address, r
 	if emptyAddress(proposer) {
 		seed = round
 	} else {
-		seed = calcSeed(valSet, proposer, round) + 1
+		seed = calcSeed(valSet, proposer, round) + 1 // index for next proposal
 	}
 	pick := seed % uint64(valSet.Size())
 	return valSet.GetByIndex(pick)
 }
 
+// stickySelector is implemented as roundRobinSelector?
 func stickySelector(valSet hotstuff.ValidatorSet, proposer common.Address, round uint64) hotstuff.Validator {
 	if valSet.Size() == 0 {
 		return nil
@@ -194,6 +198,10 @@ func vrfSelector(valSet hotstuff.ValidatorSet, proposer common.Address, round ui
 func (valSet *defaultSet) AddValidator(address common.Address) bool {
 	valSet.validatorMu.Lock()
 	defer valSet.validatorMu.Unlock()
+
+	// if _, val := valSet.GetByAddress(address); val != nil {
+	// 	return false
+	// }
 	for _, v := range valSet.validators {
 		if v.Address() == address {
 			return false
@@ -202,6 +210,7 @@ func (valSet *defaultSet) AddValidator(address common.Address) bool {
 	valSet.validators = append(valSet.validators, New(address))
 	// TODO: we may not need to re-sort it again
 	// sort validator
+	// why validators need to be sorted?
 	sort.Sort(valSet.validators)
 	return true
 }
@@ -209,6 +218,11 @@ func (valSet *defaultSet) AddValidator(address common.Address) bool {
 func (valSet *defaultSet) RemoveValidator(address common.Address) bool {
 	valSet.validatorMu.Lock()
 	defer valSet.validatorMu.Unlock()
+
+	// if idx, val := valSet.GetByAddress(address); val != nil {
+	// 	valSet.validators = append(valSet.validators[:idx], valSet.validators[idx+1:]...)
+	// 	return true
+	// }
 
 	for i, v := range valSet.validators {
 		if v.Address() == address {
@@ -223,13 +237,14 @@ func (valSet *defaultSet) Copy() hotstuff.ValidatorSet {
 	valSet.validatorMu.RLock()
 	defer valSet.validatorMu.RUnlock()
 
-	addresses := make([]common.Address, 0, len(valSet.validators))
+	addresses := make([]common.Address, 0, len(valSet.validators)) // 0 ???
 	for _, v := range valSet.validators {
 		addresses = append(addresses, v.Address())
 	}
 	return NewSet(addresses, valSet.policy)
 }
 
+// how many addresses in list are validators
 func (valSet *defaultSet) ParticipantsNumber(list []common.Address) int {
 	if list == nil || len(list) == 0 {
 		return 0

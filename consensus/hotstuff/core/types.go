@@ -120,6 +120,7 @@ type MsgNewView struct {
 	PrepareQC *hotstuff.QuorumCert
 }
 
+// implementations for type Proposal interfaces in type.go?
 func (m *MsgNewView) EncodeRLP(w io.Writer) error {
 	return rlp.Encode(w, []interface{}{m.View, m.PrepareQC})
 }
@@ -205,6 +206,7 @@ func (m *MsgPreCommit) String() string {
 	return fmt.Sprintf("{MsgPreCommit Height: %d Round: %d Hash: %s}", m.View.Height, m.View.Round, m.Proposal.Hash())
 }
 
+// where are MsgCommit and MsgDecided defined?
 type Vote struct {
 	View   *hotstuff.View
 	Digest common.Hash // Digest of s.Announce.Proposal.Hash()

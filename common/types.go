@@ -35,6 +35,7 @@ import (
 // Lengths of hashes and addresses in bytes.
 const (
 	// HashLength is the expected length of the hash
+	// 256 bit
 	HashLength = 32
 	// AddressLength is the expected length of the address
 	AddressLength = 20

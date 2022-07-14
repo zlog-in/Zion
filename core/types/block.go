@@ -67,7 +67,7 @@ func (n *BlockNonce) UnmarshalText(input []byte) error {
 
 // Header represents a block header in the Ethereum blockchain.
 type Header struct {
-	ParentHash  common.Hash    `json:"parentHash"       gencodec:"required"`
+	ParentHash  common.Hash    `json:"parentHash"       gencodec:"required"` // '' ???
 	UncleHash   common.Hash    `json:"sha3Uncles"       gencodec:"required"`
 	Coinbase    common.Address `json:"miner"            gencodec:"required"`
 	Root        common.Hash    `json:"stateRoot"        gencodec:"required"`
@@ -99,6 +99,8 @@ type headerMarshaling struct {
 // RLP encoding.
 func (h *Header) Hash() common.Hash {
 	// If the mix digest is equivalent to the predefined Hotstuff digest, use Hotstuff specific hash calculation.
+	// what is the MixDigest?
+	// what is the predefined Hotstuff digest?
 	if h.MixDigest == HotstuffDigest {
 		// Seal is reserved in extra-data. To prove block is signed by the proposer.
 		if hotstuffHeader := HotstuffFilteredHeader(h, false); hotstuffHeader != nil {

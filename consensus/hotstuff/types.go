@@ -32,6 +32,7 @@ import (
 
 // Proposal supports retrieving height and serialized block to be used during HotStuff consensus.
 // It is the interface that abstracts different message structure. (consensus/hotstuff/core/core.go)
+// where is the implementations for these interfaces?
 type Proposal interface {
 	// Number retrieves the block height number of this proposal.
 	Number() *big.Int
@@ -164,6 +165,7 @@ func (qc *QuorumCert) Height() *big.Int {
 	return qc.View.Height
 }
 
+// why uint64?
 func (qc *QuorumCert) HeightU64() uint64 {
 	return qc.Height().Uint64()
 }
@@ -184,6 +186,7 @@ type MsgType interface {
 	Value() uint64
 }
 
+// what is this type?
 type MsgTypeConvert func(data interface{}) MsgType
 
 var MsgTypeConvertHandler MsgTypeConvert
@@ -234,6 +237,7 @@ func (m *Message) DecodeRLP(s *rlp.Stream) error {
 //
 // define the functions that needs to be provided for core.
 
+// what is the payload?
 func (m *Message) FromPayload(b []byte, validateFn func([]byte, []byte) (common.Address, error)) error {
 	// Decode Message
 	err := rlp.DecodeBytes(b, &m)
@@ -288,3 +292,5 @@ func RLPHash(v interface{}) (h common.Hash) {
 	hw.Sum(h[:0])
 	return h
 }
+
+// three import types are defined here: View, QuorumCert and Message

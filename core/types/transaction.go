@@ -65,6 +65,7 @@ func NewTx(inner TxData) *Transaction {
 // TxData is the underlying data of a transaction.
 //
 // This is implemented by LegacyTx and AccessListTx.
+// where are the implementations for this interface
 type TxData interface {
 	txType() byte // returns the type ID
 	copy() TxData // creates a deep copy and initializes all fields
@@ -79,7 +80,7 @@ type TxData interface {
 	to() *common.Address
 
 	rawSignatureValues() (v, r, s *big.Int)
-	setSignatureValues(chainID, v, r, s *big.Int)
+	setSignatureValues(chainID, v, r, s *big.Int) // ???
 }
 
 // EncodeRLP implements rlp.Encoder
@@ -191,6 +192,7 @@ func (tx *Transaction) setDecoded(inner TxData, size int) {
 	}
 }
 
+// what does sanity mean?
 func sanityCheckSignature(v *big.Int, r *big.Int, s *big.Int, maybeProtected bool) error {
 	if isProtectedV(v) && !maybeProtected {
 		return ErrUnexpectedProtection
